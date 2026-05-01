@@ -1,0 +1,9 @@
+[project]
+name = "data-cli"
+version = "0.1.0"
+description = "Personal CLI tool for data inspection"
+requires-python = ">=3.11"
+
+[project.scripts]
+inspect = "inspect:main"
+cli = "cli:main"
