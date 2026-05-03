@@ -13,14 +13,14 @@ def load_csv(file_path: str) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-def inspect(df: pd.DataFrame) -> None:
+def inspect(df: pd.DataFrame, limit: int = 5) -> None:
     print(f"Rows:    {len(df)}")
     print(f"Columns: {len(df.columns)}")
     print(f"\nColumn names and types:")
     for col, dtype in df.dtypes.items():
         print(f"  {col}: {dtype}")
-    print(f"\nFirst 5 rows:")
-    print(df.head())
+    print(f"\nFirst {limit} rows:")
+    print(df.head(limit))
 
 
 def missing(df: pd.DataFrame) -> None:

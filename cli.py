@@ -10,6 +10,7 @@ def main() -> None:
 
     inspect_parser = subparsers.add_parser("inspect", help="Print basic info about a CSV")
     inspect_parser.add_argument("--file", required=True, help="Path to CSV file")
+    inspect_parser.add_argument("--limit", type=int, default=5, help="Rows to preview (default: 5)")
 
     summarise_parser = subparsers.add_parser("summarise", help="Summarise a specific column")
     summarise_parser.add_argument("--file", required=True)
@@ -29,7 +30,7 @@ def main() -> None:
     if args.command == "inspect":
         try:
             df = load_csv(args.file)
-            inspect(df)
+            inspect(df, limit=args.limit)
         except (FileNotFoundError, ValueError) as e:
             print(f"Error: {e}")
 
