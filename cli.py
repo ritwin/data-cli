@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from ingest import load_csv, inspect, summarise, missing, filter_rows
+from ingest import load_csv, inspect, summarise, missing, filter_rows, count
 
 
 def main() -> None:
@@ -17,6 +17,11 @@ def main() -> None:
 
     missing_parser = subparsers.add_parser("missing", help="Show columns with missing values")
     missing_parser.add_argument("--file", required=True)
+
+    count_parser = subparsers.add_parser("count", help="Count rows matching a column value")
+    count_parser.add_argument("--file", required=True)
+    count_parser.add_argument("--column", required=True)
+    count_parser.add_argument("--value", required=True)
 
     filter_parser = subparsers.add_parser("filter", help="Filter rows by column value")
     filter_parser.add_argument("--file", required=True)
@@ -44,6 +49,13 @@ def main() -> None:
         try:
             df = load_csv(args.file)
             missing(df)
+        except (FileNotFoundError, ValueError) as e:
+            print(f"Error: {e}")
+
+    elif args.command == "count":
+        try:
+            df = load_csv(args.file)
+            count(df, args.column, args.value)
         except (FileNotFoundError, ValueError) as e:
             print(f"Error: {e}")
 
