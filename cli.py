@@ -29,6 +29,7 @@ def main() -> None:
     filter_parser.add_argument("--column", required=True)
     filter_parser.add_argument("--value", required=True)
     filter_parser.add_argument("--limit", type=int, default=10, help="Max rows to show (default: 10)")
+    filter_parser.add_argument("--output", default=None, help="Save matched rows to this CSV file")
 
     args = parser.parse_args()
 
@@ -66,6 +67,9 @@ def main() -> None:
             result = filter_rows(df, args.column, args.value)
             print(f"Matched {len(result)} row(s).\n")
             print(result.head(args.limit).to_string(index=False))
+            if args.output:
+                result.to_csv(args.output, index=False)
+                print(f"\nSaved to {args.output}")
         except (FileNotFoundError, ValueError) as e:
             print(f"Error: {e}")
 
