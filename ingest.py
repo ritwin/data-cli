@@ -23,6 +23,32 @@ def inspect(df: pd.DataFrame) -> None:
     print(df.head())
 
 
+def missing(df: pd.DataFrame) -> None:
+    counts = df.isnull().sum()
+    total = len(df)
+    print(f"Missing values (out of {total} rows):\n")
+    found = False
+    for col, n in counts.items():
+        if n > 0:
+            print(f"  {col}: {n} missing ({n / total:.1%})")
+            found = True
+    if not found:
+        print("  No missing values.")
+
+
+def filter_rows(df: pd.DataFrame, column: str, value: str) -> pd.DataFrame:
+    if column not in df.columns:
+        raise ValueError(f"Column '{column}' not found. Available: {list(df.columns)}")
+    if pd.api.types.is_numeric_dtype(df[column]):
+        try:
+            mask = df[column] == float(value)
+        except ValueError:
+            raise ValueError(f"Column '{column}' is numeric but '{value}' is not a number.")
+    else:
+        mask = df[column].astype(str).str.lower() == value.lower()
+    return df[mask]
+
+
 def summarise(df: pd.DataFrame, column: str) -> None:
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found. Available: {list(df.columns)}")

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from ingest import load_csv, inspect, summarise
+from ingest import load_csv, inspect, summarise, missing, filter_rows
 
 
 def main() -> None:
@@ -14,6 +14,15 @@ def main() -> None:
     summarise_parser = subparsers.add_parser("summarise", help="Summarise a specific column")
     summarise_parser.add_argument("--file", required=True)
     summarise_parser.add_argument("--column", required=True)
+
+    missing_parser = subparsers.add_parser("missing", help="Show columns with missing values")
+    missing_parser.add_argument("--file", required=True)
+
+    filter_parser = subparsers.add_parser("filter", help="Filter rows by column value")
+    filter_parser.add_argument("--file", required=True)
+    filter_parser.add_argument("--column", required=True)
+    filter_parser.add_argument("--value", required=True)
+    filter_parser.add_argument("--limit", type=int, default=10, help="Max rows to show (default: 10)")
 
     args = parser.parse_args()
 
@@ -28,6 +37,22 @@ def main() -> None:
         try:
             df = load_csv(args.file)
             summarise(df, args.column)
+        except (FileNotFoundError, ValueError) as e:
+            print(f"Error: {e}")
+
+    elif args.command == "missing":
+        try:
+            df = load_csv(args.file)
+            missing(df)
+        except (FileNotFoundError, ValueError) as e:
+            print(f"Error: {e}")
+
+    elif args.command == "filter":
+        try:
+            df = load_csv(args.file)
+            result = filter_rows(df, args.column, args.value)
+            print(f"Matched {len(result)} row(s).\n")
+            print(result.head(args.limit).to_string(index=False))
         except (FileNotFoundError, ValueError) as e:
             print(f"Error: {e}")
 
