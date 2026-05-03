@@ -23,7 +23,7 @@ def inspect(df: pd.DataFrame, limit: int = 5) -> None:
     print(df.head(limit))
 
 
-def missing(df: pd.DataFrame) -> None:
+def missing(df: pd.DataFrame, show_all: bool = False) -> None:
     counts = df.isnull().sum()
     total = len(df)
     print(f"Missing values (out of {total} rows):\n")
@@ -32,7 +32,9 @@ def missing(df: pd.DataFrame) -> None:
         if n > 0:
             print(f"  {col}: {n} missing ({n / total:.1%})")
             found = True
-    if not found:
+        elif show_all:
+            print(f"  {col}: complete")
+    if not found and not show_all:
         print("  No missing values.")
 
 

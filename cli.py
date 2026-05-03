@@ -18,6 +18,7 @@ def main() -> None:
 
     missing_parser = subparsers.add_parser("missing", help="Show columns with missing values")
     missing_parser.add_argument("--file", required=True)
+    missing_parser.add_argument("--all", action="store_true", help="Show all columns, including complete ones")
 
     sample_parser = subparsers.add_parser("sample", help="Show N random rows")
     sample_parser.add_argument("--file", required=True)
@@ -57,7 +58,7 @@ def main() -> None:
     elif args.command == "missing":
         try:
             df = load_csv(args.file)
-            missing(df)
+            missing(df, show_all=args.all)
         except (FileNotFoundError, ValueError) as e:
             print(f"Error: {e}")
 
