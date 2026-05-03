@@ -49,6 +49,12 @@ def filter_rows(df: pd.DataFrame, column: str, value: str) -> pd.DataFrame:
     return df[mask]
 
 
+def sample(df: pd.DataFrame, n: int = 5, seed: int | None = None) -> None:
+    actual = min(n, len(df))
+    print(f"Random sample of {actual} row(s) from {len(df)} total:\n")
+    print(df.sample(n=actual, random_state=seed).to_string(index=False))
+
+
 def summarise(df: pd.DataFrame, column: str) -> None:
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found. Available: {list(df.columns)}")

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from ingest import load_csv, inspect, summarise, missing, filter_rows
+from ingest import load_csv, inspect, summarise, missing, filter_rows, sample
 
 
 def main() -> None:
@@ -17,6 +17,11 @@ def main() -> None:
 
     missing_parser = subparsers.add_parser("missing", help="Show columns with missing values")
     missing_parser.add_argument("--file", required=True)
+
+    sample_parser = subparsers.add_parser("sample", help="Show N random rows")
+    sample_parser.add_argument("--file", required=True)
+    sample_parser.add_argument("--n", type=int, default=5, help="Number of rows (default: 5)")
+    sample_parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility")
 
     filter_parser = subparsers.add_parser("filter", help="Filter rows by column value")
     filter_parser.add_argument("--file", required=True)
@@ -37,6 +42,13 @@ def main() -> None:
         try:
             df = load_csv(args.file)
             summarise(df, args.column)
+        except (FileNotFoundError, ValueError) as e:
+            print(f"Error: {e}")
+
+    elif args.command == "sample":
+        try:
+            df = load_csv(args.file)
+            sample(df, n=args.n, seed=args.seed)
         except (FileNotFoundError, ValueError) as e:
             print(f"Error: {e}")
 
